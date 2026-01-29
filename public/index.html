@@ -21,7 +21,7 @@
 
     <ul id="messages"></ul>
     <script>
-      let socket = new WebSocket("ws://localhost:3100");
+      let socket;
 
       const status = document.getElementById("status");
       const messageForm = document.getElementById("message-form");
@@ -32,34 +32,38 @@
       const btnConnect = document.getElementById("btn-connect");
       const btnDisconnect = document.getElementById("btn-disconnect");
 
-      socket.onopen = () => {
-        console.log("WebSocket Connected");
-        messageForm.style.display = "block";
-        status.textContent = "Connected";
+      const createWebSocket = () => {
+        const socket = new WebSocket("ws://localhost:3100");
+
+        socket.onopen = () => {
+          console.log("WebSocket Connected");
+          messageForm.style.display = "block";
+          status.textContent = "Connected";
+        };
+
+        socket.onclose = () => {
+          console.log("WebSocket Disconnected");
+          messageForm.style.display = "none";
+          status.textContent = "Disconnected";
+        };
+
+        socket.onerror = (event) => {
+          console.error("WebSocket Error: ", event);
+        };
+
+        return socket;
       };
 
-      socket.onclose = () => {
-        console.log("WebSocket Disconnected");
-        messageForm.style.display = "none";
-        status.textContent = "Disconnected";
-      };
-
-      socket.onerror = (event) => {
-        console.error("WebSocket Error: ", event);
-      };
+      socket = createWebSocket();
 
       btnDisconnect.addEventListener("click", () => {
         if (socket.readyState !== WebSocket.OPEN) return;
         socket.close();
-        status.textContent = "Disconnected";
-        messageForm.style.display = "none";
       });
 
       btnConnect.addEventListener("click", () => {
         if (socket.readyState === WebSocket.OPEN) return;
-        socket = new WebSocket("ws://localhost:3100");
-        status.textContent = "Connected";
-        messageForm.style.display = "block";
+        socket = createWebSocket();
       });
     </script>
   </body>
