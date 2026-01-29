@@ -51,6 +51,10 @@
           console.error("WebSocket Error: ", event);
         };
 
+        socket.onmessage = (event) => {
+          showMessage(event.data);
+        };
+
         return socket;
       };
 
@@ -65,6 +69,19 @@
         if (socket.readyState === WebSocket.OPEN) return;
         socket = createWebSocket();
       });
+
+      messageForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!inputMessage.value) return;
+        socket.send(inputMessage.value);
+        inputMessage.value = "";
+      });
+
+      const showMessage = (message) => {
+        const li = document.createElement("li");
+        li.textContent = message;
+        messagesContainer.appendChild(li);
+      };
     </script>
   </body>
 </html>
