@@ -12,8 +12,8 @@ const server = Bun.serve({
     return new Response("Upgrade failed", { status: 500 });
   },
   websocket: {
-    message(ws, message) {
-      console.log({ ws, message });
+    message(ws, message: string) {
+      ws.send(message.toUpperCase());
     },
     open(ws) {
       console.log("Client connected");
