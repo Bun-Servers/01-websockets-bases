@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="./favicon.ico" />
     <title>Web Socket Client</title>
   </head>
   <body>
@@ -12,7 +13,7 @@
     <button id="btn-disconnect">Disconnect</button>
     <button id="btn-connect">Connect</button>
 
-    <form id="message-form">
+    <form id="message-form" style="display: none">
       <h1>Messages</h1>
       <input type="text" id="input-message" placeholder="Message" />
       <button id="send">Send</button>
@@ -20,16 +21,46 @@
 
     <ul id="messages"></ul>
     <script>
-      const socket = new WebSocket("ws://localhost:3100");
+      let socket = new WebSocket("ws://localhost:3100");
 
-      const status = document.getElementById("#status");
-      const messageForm = document.getElementById("#message-form");
-      const inputMessage = document.getElementById("#input-message");
-      const messagesContainer = document.getElementById("#messages");
+      const status = document.getElementById("status");
+      const messageForm = document.getElementById("message-form");
+      const inputMessage = document.getElementById("input-message");
+      const messagesContainer = document.getElementById("messages");
 
-      const btnSend = document.getElementById("#send");
-      const btnConnect = document.getElementById("#btn-connect");
-      const btnDisconnect = document.getElementById("#btn-disconnect");
+      const btnSend = document.getElementById("send");
+      const btnConnect = document.getElementById("btn-connect");
+      const btnDisconnect = document.getElementById("btn-disconnect");
+
+      socket.onopen = () => {
+        console.log("WebSocket Connected");
+        messageForm.style.display = "block";
+        status.textContent = "Connected";
+      };
+
+      socket.onclose = () => {
+        console.log("WebSocket Disconnected");
+        messageForm.style.display = "none";
+        status.textContent = "Disconnected";
+      };
+
+      socket.onerror = (event) => {
+        console.error("WebSocket Error: ", event);
+      };
+
+      btnDisconnect.addEventListener("click", () => {
+        if (socket.readyState !== WebSocket.OPEN) return;
+        socket.close();
+        status.textContent = "Disconnected";
+        messageForm.style.display = "none";
+      });
+
+      btnConnect.addEventListener("click", () => {
+        if (socket.readyState === WebSocket.OPEN) return;
+        socket = new WebSocket("ws://localhost:3100");
+        status.textContent = "Connected";
+        messageForm.style.display = "block";
+      });
     </script>
   </body>
 </html>
