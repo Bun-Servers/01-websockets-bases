@@ -6,6 +6,30 @@
     <title>Web Socket Client</title>
   </head>
   <body>
-    <h1>Hola mundo desde mi servidor</h1>
+    <h1>STATUS</h1>
+    <p id="status">Connecting</p>
+
+    <button id="btn-disconnect">Disconnect</button>
+    <button id="btn-connect">Connect</button>
+
+    <form id="message-form">
+      <h1>Messages</h1>
+      <input type="text" id="input-message" placeholder="Message" />
+      <button id="send">Send</button>
+    </form>
+
+    <ul id="messages"></ul>
+    <script>
+      const socket = new WebSocket("ws://localhost:3100");
+
+      const status = document.getElementById("#status");
+      const messageForm = document.getElementById("#message-form");
+      const inputMessage = document.getElementById("#input-message");
+      const messagesContainer = document.getElementById("#messages");
+
+      const btnSend = document.getElementById("#send");
+      const btnConnect = document.getElementById("#btn-connect");
+      const btnDisconnect = document.getElementById("#btn-disconnect");
+    </script>
   </body>
 </html>
