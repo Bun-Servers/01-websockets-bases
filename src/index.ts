@@ -1,4 +1,10 @@
+import index from "../public/index.html";
+
 const server = Bun.serve({
+  port: 3100,
+  routes: {
+    "/": index,
+  },
   fetch(req, server) {
     if (server.upgrade(req)) {
       return;
