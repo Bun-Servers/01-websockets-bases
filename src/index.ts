@@ -2,6 +2,13 @@ import index from "../public/index.html";
 
 type WebSocketData = {
   channelId: string;
+  xToken: string;
+  session: Session;
+};
+
+type Session = {
+  id: number;
+  sessionId: string;
 };
 
 const server = Bun.serve({
@@ -16,11 +23,13 @@ const server = Bun.serve({
     const xToken = cookies.get("X-Token");
     const session = cookies.get("session");
 
-    console.log({ xToken, session, channelId });
+    if (!xToken || !session) return;
 
     server.upgrade(req, {
       data: {
         channelId,
+        xToken,
+        session: JSON.parse(session),
       },
     });
 
