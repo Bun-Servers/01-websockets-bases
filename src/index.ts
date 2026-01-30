@@ -13,10 +13,12 @@ const server = Bun.serve({
   },
   websocket: {
     message(ws, message: string) {
+      ws.publish("general-chat", message.toUpperCase());
       ws.send(message.toUpperCase());
     },
     open(ws) {
       console.log("Client connected");
+      ws.subscribe("general-chat");
     },
     close(ws, code, message) {
       console.log("Client disconnected");
