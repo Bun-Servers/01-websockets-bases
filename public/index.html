@@ -21,6 +21,17 @@
 
     <ul id="messages"></ul>
     <script>
+      // Cookies
+      const session = {
+        id: 1,
+        sessionId: "Abc123",
+      };
+
+      const JWT = "MiTokenMuySeguro12345";
+
+      document.cookie = `session=${JSON.stringify(session)}`;
+      document.cookie = `X-Token=${JWT}`;
+
       let socket;
 
       const status = document.getElementById("status");
@@ -33,7 +44,10 @@
       const btnDisconnect = document.getElementById("btn-disconnect");
 
       const createWebSocket = () => {
-        const socket = new WebSocket("ws://localhost:3100");
+        const channelId = "mi-canal-personalizado";
+        const socket = new WebSocket(
+          `ws://localhost:3100?channelId=${channelId}`,
+        );
 
         socket.onopen = () => {
           console.log("WebSocket Connected");

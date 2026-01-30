@@ -1,17 +1,39 @@
 import index from "../public/index.html";
 
+type WebSocketData = {
+  channelId: string;
+};
+
 const server = Bun.serve({
   port: 3100,
   routes: {
     "/": index,
   },
   fetch(req, server) {
-    if (server.upgrade(req)) {
-      return;
-    }
-    return new Response("Upgrade failed", { status: 500 });
+    const cookies = new Bun.CookieMap(req.headers.get("cookie")!);
+    const channelId = new URL(req.url).searchParams.get("channelId") || "";
+
+    const xToken = cookies.get("X-Token");
+    const session = cookies.get("session");
+
+    console.log({ xToken, session, channelId });
+
+    server.upgrade(req, {
+      data: {
+        channelId,
+      },
+    });
+
+    return undefined;
+
+    // if (server.upgrade(req)) {
+    //   return;
+    // }
+    // return new Response("Upgrade failed", { status: 500 });
   },
   websocket: {
+    data: {} as WebSocketData,
+
     message(ws, message: string) {
       ws.publish("general-chat", message.toUpperCase());
       ws.send(message.toUpperCase());
